@@ -1,5 +1,7 @@
 """
 Craft Demo for Intuit
+    AWS Migration
+        hardware and financial assessment
 
 Author
     James Hamilton
@@ -21,17 +23,22 @@ from pathlib import Path
 import time
 import numpy
 
-## Function to pull an Excel file from the master branch of GitHub repository.
-## A continues while loop was created to verify file download before moving to the next function.
-## Sleep method added to not bombard Github with requests.
-##
+""" 
+Function to pull an Excel file from the master branch of GitHub repository.
+A continues while loop was created to verify file download before moving to the next function.
+Sleep method added to not bombard Github with requests.
+"""
 def pullExcelFromGithub():
     url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/master/hardware.xlsx')
     pathToExcelFile = Path('hardware.xlsx')
     fileNotFound = True
     while fileNotFound is True:
          print("Downloading file . . .")
-         time.sleep(2)
+#
+## URL requests to third party site intentionally delayed.  Third party providers have a habit of
+## blocking IPs that bombard their servers with requests.
+#
+         time.sleep(3)
          try:
              if pathToExcelFile.is_file():
                  fileNotFound = False
