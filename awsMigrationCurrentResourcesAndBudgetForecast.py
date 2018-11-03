@@ -88,13 +88,19 @@ def readExcelIntoDataframe():
 
 
 def resourcesByDepartment(departmentResources):
-    """ Function receives param from sanitizeDataFrame.  Data is grouped by DEPARTMENT"""
+    """ Function receives param from sanitizeDataframe function.  Data is grouped by DEPARTMENT
+    while CPU and RAM are summed for each department.
+    """
     resourcesBeingUsedByDepartment = departmentResources
     sumDepartmentResources = resourcesBeingUsedByDepartment.groupby(['DEPARTMENT'])[["CPU CORES", "RAM (MB)"]].sum()
     print(sumDepartmentResources)
 
 
 def resourcesByApplication(applicationResources):
+    """ Function receives param from sanitizeDataframe function.  Department rows are sorted.
+    Dataframe is then grouped by Department and Application while CPU and Ram are summed for each application
+    being used by the department.
+    """
     applicationsDepartment = applicationResources
     applicationsDepartment = applicationsDepartment.sort_values(['DEPARTMENT'])
     appsGroupedByDepartment = applicationsDepartment.groupby(['DEPARTMENT', 'APPLICATION'])[["CPU CORES", "RAM (MB)"]].sum()
