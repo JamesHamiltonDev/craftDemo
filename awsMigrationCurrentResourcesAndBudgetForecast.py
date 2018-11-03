@@ -19,7 +19,7 @@ def pullExcelFromGithub():
                  print('File downloaded')
                  return fileNotFound
              else:
-                 excelFileFromGithub = urllib.request.urlretrieve(url, filename='hardware.xlsx')
+                 urllib.request.urlretrieve(url, filename='hardware.xlsx')
          except:
              pass
 
