@@ -119,11 +119,20 @@ def resourcesByDataCenter(dataCenterResources):
 
 
 def readAWScsv():
+    """ AWS csv read into pandas data frame and returned.
+    """
     awsCSV = pandas.read_csv('amazonEC2prices.csv')
     return awsCSV
 
 
 def sliceSplitSanitizeCSV():
+    """ Function calls readAWScsv.  All rows in data frame are turned into strings, lowered, and stripped
+    of white space.  The RAM gebibyte notations in the RAM (GiB) rows are removed.  RAM and cpu rows are
+    changed to integer datatypes for calculations.  RAM (MB) column is created by converting GiB to MB from
+    the RAM (GiB) column.  Removed $ sign and other notations from hourly cost column.  Hourly cost column
+    converted to float type.  Gregorian year cost and Leap year cost columns created by calculating number
+    of hours a year.
+    """
     awsCSVdataframe = readAWScsv()
     awsCSVdataframe = awsCSVdataframe.apply(lambda x: x.astype(str).str.lower().str.strip())
     awsCSVdataframe['RAM (GiB)'] = awsCSVdataframe['RAM (GiB)'].str.replace(' gib', '')
