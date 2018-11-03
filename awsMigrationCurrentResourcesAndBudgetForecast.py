@@ -27,10 +27,7 @@ def pullExcelFromGithub():
 def sanitizeDataframe(hardwareDataframe):
     unsanitizedDataframe = hardwareDataframe
     sanitizeDataframe = unsanitizedDataframe.apply(lambda x: x.astype(str).str.lower().str.strip())
-#    .str.replace(' ', ''))
     sanitizeDataframe.columns = map(str.upper, sanitizeDataframe.columns)
-#    sanitizeDataframe = sanitizeDataframe.where((numpy.nan(sanitizeDataframe)), None)
-#    sanitizeDataframe = sanitizeDataframe.astype(str).replace('engineeringcanada', 'engineering canada')
     sanitizeDataframe = sanitizeDataframe.astype(object).replace('nan', 'None')
     sanitizeDataframe = sanitizeDataframe.loc[sanitizeDataframe['LOGICAL STATUS'] == "operational"]
     sanitizeDataframe['CPU CORES'] = sanitizeDataframe['CPU CORES'].astype(int)
@@ -43,28 +40,16 @@ def readExcelIntoDataframe():
     if waitingForDownload is False:
         hardwareExcelToDataframe = pandas.read_excel(open('ExcelTest.xlsx', 'rb'))
         sanitizedData = sanitizeDataframe(hardwareExcelToDataframe)
-#        listDepartmentsWithHardwareHosted(sanitizedData)
         resourcesByDepartment(sanitizedData)
         resourcesByApplication(sanitizedData)
         resourcesByDataCenter(sanitizedData)
+        sliceSplitSanitizeCSV()
     else:
         print('Download failed')
 
 
-def listDepartmentsWithHardwareHosted(departmentsHH):
-    pass
-#    departmentHostingHardware = departmentsHH
-#    departmentHostingHardware = departmentHostingHardware.GROUP.unique()
-#    arrayDepartmentsToList = list(departmentHostingHardware)
-#    print(arrayDepartmentsToList)
-
-
 def resourcesByDepartment(departmentResources):
     resourcesBeingUsedByDepartment = departmentResources
-#    resourcesBeingUsedByDepartment['CPU CORES'] = resourcesBeingUsedByDepartment['CPU CORES'].astype(int)
-#    resourcesBeingUsedByDepartment['RAM (MB)'] = resourcesBeingUsedByDepartment['RAM (MB)'].astype(int)
-#    resourcesBeingUsedByDepartment = resourcesBeingUsedByDepartment.loc[
-#        resourcesBeingUsedByDepartment['LOGICAL STATUS'] == "operational"]
     sumDepartmentResources = resourcesBeingUsedByDepartment.groupby(['GROUP'])[["CPU CORES", "RAM (MB)"]].sum()
     print(sumDepartmentResources)
 
@@ -83,7 +68,23 @@ def resourcesByDataCenter(dataCenterResources):
     print(groupedResourcesBySite)
 
 
+def readAWScsv():
+    awsCSV = pandas.read_csv('amazonEC2prices.csv')
+    return awsCSV
 
+
+def sliceSplitSanitizeCSV():
+    awsCSVdataframe = readAWScsv()
+    awsCSVdataframe = awsCSVdataframe.apply(lambda x: x.astype(str).str.lower().str.strip())
+    awsCSVdataframe['RAM (GiB)'] = awsCSVdataframe['RAM (GiB)'].str.replace(' gib', '')
+    awsCSVdataframe[["cpu", "RAM (GiB)"]] = awsCSVdataframe[["cpu", "RAM (GiB)"]].astype(int)
+    awsCSVdataframe["RAM (MB)"] = awsCSVdataframe["RAM (GiB)"].apply(lambda x: (x * 8589934592) / 8000000).astype(int)
+    awsCSVdataframe["hourly cost"] = awsCSVdataframe["hourly cost"].str.replace('$', '').str.split(' ').str.get(0).astype(float)
+    awsCSVdataframe["gregorian year cost"] = awsCSVdataframe["hourly cost"].apply(lambda x: x * 8760).astype(float)
+    awsCSVdataframe["leap year cost"] = awsCSVdataframe["hourly cost"].apply(lambda x: x * 8784).astype(float)
+    awsCSVdataframe.columns = map(str.upper, awsCSVdataframe.columns)
+    print(awsCSVdataframe)
+    return awsCSVdataframe
 
 
 if __name__ == '__main__':
