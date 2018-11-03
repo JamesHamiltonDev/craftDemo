@@ -1,3 +1,19 @@
+"""
+Craft Demo for Intuit
+
+Author
+    James Hamilton
+
+Github repo
+    https://github.com/JamesHamiltonDev/craftDemo
+
+
+Program to calculate current hardware utilization by departments and applications
+in preparation for a migration to AWS cloud.  This program also includes a financial forecast
+for the next 3 years.
+
+"""
+
 import pandas
 #import git
 import urllib.request
@@ -5,7 +21,10 @@ from pathlib import Path
 import time
 import numpy
 
-
+## Function to pull an Excel file from the master branch of GitHub repository.
+## A continues while loop was created to verify file download before moving to the next function.
+## Sleep method added to not bombard Github with requests.
+##
 def pullExcelFromGithub():
     url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/master/hardware.xlsx')
     pathToExcelFile = Path('hardware.xlsx')
