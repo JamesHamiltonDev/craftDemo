@@ -146,8 +146,10 @@ def sliceSplitSanitizeCSV():
 
 
 def mergeAWSonHardwareDF(hardwareDF):
+    """ Function receives param from sanitizeDataframe. """
     saniHardwareDF = pandas.DataFrame(hardwareDF)
-    print(saniHardwareDF)
+    awsPriceDF = sliceSplitSanitizeCSV()
+    print(awsPriceDF)
 
 if __name__ == '__main__':
     readExcelIntoDataframe()
