@@ -36,6 +36,7 @@ def pullExcelFromGithub():
     fileNotFound = True
     while fileNotFound is True:
          print("Downloading file . . .")
+
 #
 ## URL requests to third party site intentionally delayed.  Third party providers have a habit of
 ## blocking IPs that bombard their servers with requests.
@@ -47,6 +48,7 @@ def pullExcelFromGithub():
                  print('File downloaded')
                  return fileNotFound
              else:
+
                  urllib.request.urlretrieve(url, filename='hardware.xlsx')
          except:
              pass
