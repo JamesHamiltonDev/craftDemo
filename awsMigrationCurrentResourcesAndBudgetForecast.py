@@ -7,12 +7,12 @@ import numpy
 
 
 def pullExcelFromGithub():
-    url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/development/hardware.xlsx')
+    url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/master/hardware.xlsx')
     pathToExcelFile = Path('hardware.xlsx')
     fileNotFound = True
     while fileNotFound is True:
          print("Downloading file . . .")
-         time.sleep(1)
+         time.sleep(2)
          try:
              if pathToExcelFile.is_file():
                  fileNotFound = False
@@ -43,7 +43,7 @@ def readExcelIntoDataframe():
         resourcesByDepartment(sanitizedData)
         resourcesByApplication(sanitizedData)
         resourcesByDataCenter(sanitizedData)
-        sliceSplitSanitizeCSV()
+        mergeAWSonHardwareDF(sanitizedData)
     else:
         print('Download failed')
 
@@ -83,9 +83,12 @@ def sliceSplitSanitizeCSV():
     awsCSVdataframe["gregorian year cost"] = awsCSVdataframe["hourly cost"].apply(lambda x: x * 8760).astype(float)
     awsCSVdataframe["leap year cost"] = awsCSVdataframe["hourly cost"].apply(lambda x: x * 8784).astype(float)
     awsCSVdataframe.columns = map(str.upper, awsCSVdataframe.columns)
-    print(awsCSVdataframe)
     return awsCSVdataframe
 
+
+def mergeAWSonHardwareDF(hardwareDF):
+    saniHardwareDF = pandas.DataFrame(hardwareDF)
+    print(saniHardwareDF)
 
 if __name__ == '__main__':
     readExcelIntoDataframe()
