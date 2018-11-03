@@ -54,8 +54,9 @@ def pullExcelFromGithub():
 
 def sanitizeDataframe(hardwareData):
     """ Function receives param from readExcelIntoDataFrame.
-     This function sanitizes the data and removes any hardware without t
-     he logical status of operational
+     This function sanitizes the data and removes any hardware without
+     the logical status of operational.  All NaN or nan entries changed to the
+     string None.
      """
     unsanitized = hardwareData
     sanitize = unsanitized.apply(lambda x: x.astype(str).str.lower().str.strip())
