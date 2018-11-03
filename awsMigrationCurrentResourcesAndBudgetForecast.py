@@ -38,7 +38,7 @@ def sanitizeDataframe(hardwareDataframe):
 def readExcelIntoDataframe():
     waitingForDownload = pullExcelFromGithub()
     if waitingForDownload is False:
-        hardwareExcelToDataframe = pandas.read_excel(open('ExcelTest.xlsx', 'rb'))
+        hardwareExcelToDataframe = pandas.read_excel(open('hardware.xlsx', 'rb'))
         sanitizedData = sanitizeDataframe(hardwareExcelToDataframe)
         resourcesByDepartment(sanitizedData)
         resourcesByApplication(sanitizedData)
