@@ -56,11 +56,12 @@ def sanitizeDataframe(hardwareData):
     """ Function receives param from readExcelIntoDataFrame.
      This function sanitizes the data and removes any hardware without
      the logical status of operational.  All NaN or nan entries changed to the
-     string None.  Group header changed to Department
+     string None.  Group and Site header changed to Department and Data Center
+     for parity with instructions.
      """
     unsanitized = hardwareData
-    unsanitized["Department"] = unsanitized["Group"]
-    unsanitized = unsanitized.drop('Group', 1)
+    unsanitized[["Department", "Data Center"]] = unsanitized[["Group", "Site"]]
+    unsanitized = unsanitized.drop(["Group", "Site"], 1)
     sanitize = unsanitized.apply(lambda x: x.astype(str).str.lower().str.strip())
     sanitize.columns = map(str.upper, sanitize.columns)
     sanitize = sanitize.astype(object).replace('nan', 'None')
@@ -108,9 +109,12 @@ def resourcesByApplication(applicationResources):
 
 
 def resourcesByDataCenter(dataCenterResources):
+    """ Function receives param from sanitizeDataframe function.  Data Center rows are sorted.
+    Dataframe is grouped by Data Center while CPU and RAM are summed for each Data Center.
+    """
     resourcesDatacenter = dataCenterResources
-    resourcesDatacenterSorted = resourcesDatacenter.sort_values(['SITE'])
-    groupedResourcesBySite = resourcesDatacenterSorted.groupby(['SITE'])[["CPU CORES", "RAM (MB)"]].sum()
+    resourcesDatacenterSorted = resourcesDatacenter.sort_values(['DATA CENTER'])
+    groupedResourcesBySite = resourcesDatacenterSorted.groupby(['DATA CENTER'])[["CPU CORES", "RAM (MB)"]].sum()
     print(groupedResourcesBySite)
 
 
