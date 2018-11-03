@@ -56,9 +56,10 @@ def sanitizeDataframe(hardwareData):
     """ Function receives param from readExcelIntoDataFrame.
      This function sanitizes the data and removes any hardware without
      the logical status of operational.  All NaN or nan entries changed to the
-     string None.
+     string None.  Group header changed to Department
      """
     unsanitized = hardwareData
+    unsanitized["Department"] = unsanitized["Group"]
     sanitize = unsanitized.apply(lambda x: x.astype(str).str.lower().str.strip())
     sanitize.columns = map(str.upper, sanitize.columns)
     sanitize = sanitize.astype(object).replace('nan', 'None')
@@ -86,6 +87,7 @@ def readExcelIntoDataframe():
 
 
 def resourcesByDepartment(departmentResources):
+    """ Function receives param from sanitizeDataFrame.  Data is grouped by DEPARTMENT"""
     resourcesBeingUsedByDepartment = departmentResources
     sumDepartmentResources = resourcesBeingUsedByDepartment.groupby(['GROUP'])[["CPU CORES", "RAM (MB)"]].sum()
     print(sumDepartmentResources)
