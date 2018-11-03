@@ -8,18 +8,18 @@ import numpy
 
 def pullExcelFromGithub():
     url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/master/hardware.xlsx')
-    pathToExcelFile = Path('ExcelTest.xlsx')
+    pathToExcelFile = Path('hardware.xlsx')
     fileNotFound = True
     while fileNotFound is True:
          print("Downloading file . . .")
-         time.sleep(3)
+         time.sleep(1)
          try:
              if pathToExcelFile.is_file():
                  fileNotFound = False
                  print('File downloaded')
                  return fileNotFound
              else:
-                 excelFileFromGithub = urllib.request.urlretrieve(url, filename='ExcelTest.xlsx')
+                 excelFileFromGithub = urllib.request.urlretrieve(url, filename='hardware.xlsx')
          except:
              pass
 
@@ -38,7 +38,7 @@ def sanitizeDataframe(hardwareDataframe):
 def readExcelIntoDataframe():
     waitingForDownload = pullExcelFromGithub()
     if waitingForDownload is False:
-        hardwareExcelToDataframe = pandas.read_excel(open('ExcelTest.xlsx', 'rb'))
+        hardwareExcelToDataframe = pandas.read_excel(open('hardware.xlsx', 'rb'))
         sanitizedData = sanitizeDataframe(hardwareExcelToDataframe)
         resourcesByDepartment(sanitizedData)
         resourcesByApplication(sanitizedData)
