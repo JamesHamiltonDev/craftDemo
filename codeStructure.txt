@@ -1,0 +1,136 @@
+############################################################################
+######################### Craft Demo Lvl1 ##################################
+############################################################################
+###     3 Excels
+            1. Engineering
+            2. *** Use objects for Lvl2 ***
+                    Finance
+                    ? Matploit graphs ?
+            3. Master/Combined
+
+** Make sure to store/document efficiency enhancements for later comparisons **
+
+**    ? multiprocess possibility?
+          Benefits
+              Runs faster
+          Cons
+              Not needed
+              Possibly resources already in use
+          Posibillities
+              worker pools futures vs. multiprocess
+##########################################################################
+##########################################################################
+
+            
+
+## Constructor ###########################################################
+    pull excel file from github repo
+        read/print
+    parse into Dataframe
+        print
+        make adjustments
+            headers
+            sanitize?
+            integer vs. string
+        Send to functions
+               def departmentsHostedHardware
+               def applicationsGroupedByDepartment
+               def applicationSumCPUandMEM
+               def datacenterSumCPUandMEM
+        del local Excel file
+#########################################################################
+###
+
+
+** ?Possible Enhancement Function? **************************************
+    numpy function
+        count records in dataframe
+        zero fill dataframe
+        fill dataframe with new values
+#########################################################################
+###
+
+            
+## def departmentsHostedHardware ###################################            
+    New Dataframe 
+        create a list of all departments that have hosted hardware
+            eliminate all departments w/o hosted hardware
+                *** send to def departmentSumCPUandMem ***
+            uniquefy department column
+            print
+                check for errors
+            create new tab for excel
+#########################################################################
+###
+
+            
+## def applicationsGroupedByDepartment ##################################
+    New Dataframe
+        create a list of all the applications for each department
+            preassign null value
+            department as the header
+    print
+    create new tab for excel
+#########################################################################
+###
+
+            
+## def departmentSumCPUandMEM ###########################################
+    receive dataframe from def departmentsHostedHardware
+        calculate the number of CPUs and memory used by each department
+            sum by department
+            Display
+                Headers
+                    CPU & MEM
+                Left index replace
+                    Department
+        print
+        create new tab for excel
+#########################################################################
+###
+   
+
+## def applicationSumCPUandMEM ##########################################
+    groupby application and sum CPU
+    groupby application and sum MEM
+        print
+        create new tab for excel
+#########################################################################
+###
+
+
+## def datacenterSumCPUandMEM ###########################################
+    groupby site and sum CPU
+    groupby site and sum MEM
+        print
+        create new tab for excel
+#########################################################################
+###
+    
+                
+############################################################################
+######################### Craft Demo Lvl2 ##################################
+############################################################################
+###     1 Excels
+            1. *** Use objects from Lvl1 ***
+                    Finance
+                    ? Matploit graphs ?
+
+** Make sure to store/document efficiency enhancements for later comparisons **
+
+Finance forecast
+    Color coding
+    Forecast vs. Actual Variance
+        Pull Actual from demo AWS pricing
+        Line Graph
+            Static Forecast
+            Daily updated Actual
+    Actual Cost
+        ************** AWS Cost Explorer API ***************************
+        ************** AWS Price List Service API
+        
+##########################################################################
+##########################################################################
+
+
+###           

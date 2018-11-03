@@ -1,0 +1,31 @@
+aws container,cpu,ecu,RAM (GiB),instance storage,hourly cost
+t3.micro,2,Variable,1 GiB,EBS Only,$0.0704 per Hour
+t3.small,2,Variable,2 GiB,EBS Only,$0.0808 per Hour
+t3.medium,2,Variable,4 GiB,EBS Only,$0.1016 per Hour
+t3.large,2,Variable,8 GiB,EBS Only,$0.1432 per Hour
+t3.xlarge,4,Variable,16 GiB,EBS Only,$0.2264 per Hour
+t3.2xlarge,8,Variable,32 GiB,EBS Only,$0.4628 per Hour
+t2.micro,1,Variable,1 GiB,EBS Only,$0.0716 per Hour
+t2.small,1,Variable,2 GiB,EBS Only,$0.083 per Hour
+t2.medium,2,Variable,4 GiB,EBS Only,$0.1064 per Hour
+t2.large,2,Variable,8 GiB,EBS Only,$0.1528 per Hour
+t2.xlarge,4,Variable,16 GiB,EBS Only,$0.2456 per Hour
+t2.2xlarge,8,Variable,32 GiB,EBS Only,$0.5012 per Hour
+m5.large,2,8,8 GiB,EBS Only,$0.156 per Hour
+m5.xlarge,4,16,16 GiB,EBS Only,$0.252 per Hour
+m5.2xlarge,8,31,32 GiB,EBS Only,$0.514 per Hour
+m5.4xlarge,16,60,64 GiB,EBS Only,$0.898 per Hour
+m5.12xlarge,48,173,192 GiB,EBS Only,$2.434 per Hour
+m5.24xlarge,96,345,384 GiB,EBS Only,$4.738 per Hour
+m5d.large,2,8,8 GiB,1 x 75 NVMe SSD,$0.173 per Hour
+m5d.xlarge,4,16,16 GiB,1 x 150 NVMe SSD,$0.286 per Hour
+m5d.2xlarge,8,31,32 GiB,1 x 300 NVMe SSD,$0.582 per Hour
+m5d.4xlarge,16,60,64 GiB,2 x 300 NVMe SSD,$1.034 per Hour
+m5d.12xlarge,48,173,192 GiB,2 x 900 NVMe SSD,$2.842 per Hour
+m5d.24xlarge,96,345,384 GiB,4 x 900 NVMe SSD,$5.554 per Hour
+m4.large,2,6.5,8 GiB,EBS Only,$0.16 per Hour
+m4.xlarge,4,13,16 GiB,EBS Only,$0.26 per Hour
+m4.2xlarge,8,26,32 GiB,EBS Only,$0.53 per Hour
+m4.4xlarge,16,53.5,64 GiB,EBS Only,$0.93 per Hour
+m4.10xlarge,40,124.5,160 GiB,EBS Only,$2.13 per Hour
+m4.16xlarge,64,188,256 GiB,EBS Only,$3.33 per Hour
