@@ -24,15 +24,15 @@ def pullExcelFromGithub():
              pass
 
 
-def sanitizeDataframe(hardwareDataframe):
-    unsanitizedDataframe = hardwareDataframe
-    sanitizeDataframe = unsanitizedDataframe.apply(lambda x: x.astype(str).str.lower().str.strip())
-    sanitizeDataframe.columns = map(str.upper, sanitizeDataframe.columns)
-    sanitizeDataframe = sanitizeDataframe.astype(object).replace('nan', 'None')
-    sanitizeDataframe = sanitizeDataframe.loc[sanitizeDataframe['LOGICAL STATUS'] == "operational"]
-    sanitizeDataframe['CPU CORES'] = sanitizeDataframe['CPU CORES'].astype(int)
-    sanitizeDataframe['RAM (MB)'] = sanitizeDataframe['RAM (MB)'].astype(int)
-    return sanitizeDataframe
+def sanitizeDataframe(hardwareData):
+    unsanitized = hardwareData
+    sanitizeData = unsanitized.apply(lambda x: x.astype(str).str.lower().str.strip())
+    sanitizeData.columns = map(str.upper, sanitizeData.columns)
+    sanitizeData = sanitizeData.astype(object).replace('nan', 'None')
+    sanitizeData = sanitizeData.loc[sanitizeData['LOGICAL STATUS'] == "operational"]
+    sanitizeData['CPU CORES'] = sanitizeData['CPU CORES'].astype(int)
+    sanitizeData['RAM (MB)'] = sanitizeData['RAM (MB)'].astype(int)
+    return sanitizeData
 
 
 def readExcelIntoDataframe():
