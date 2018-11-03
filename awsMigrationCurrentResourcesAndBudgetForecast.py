@@ -83,7 +83,7 @@ def readExcelIntoDataframe():
         resourcesByDepartment(sanitizedData)
         resourcesByApplication(sanitizedData)
         resourcesByDataCenter(sanitizedData)
-        mergeAWSonHardwareDF(sanitizedData)
+        mergeAWSonHardware(sanitizedData)
     else:
         print('Download failed')
 
@@ -141,15 +141,18 @@ def sliceSplitSanitizeCSV():
     awsCSVdataframe["hourly cost"] = awsCSVdataframe["hourly cost"].str.replace('$', '').str.split(' ').str.get(0).astype(float)
     awsCSVdataframe["gregorian year cost"] = awsCSVdataframe["hourly cost"].apply(lambda x: x * 8760).astype(float)
     awsCSVdataframe["leap year cost"] = awsCSVdataframe["hourly cost"].apply(lambda x: x * 8784).astype(float)
+    awsCSVdataframe['cpu cores'] = awsCSVdataframe['cpu']
+    awsCSVdataframe = awsCSVdataframe.drop('cpu', 1)
     awsCSVdataframe.columns = map(str.upper, awsCSVdataframe.columns)
     return awsCSVdataframe
 
 
-def mergeAWSonHardwareDF(hardwareDF):
+def mergeAWSonHardware(hardwareDF):
     """ Function receives param from sanitizeDataframe. """
     saniHardwareDF = pandas.DataFrame(hardwareDF)
     awsPriceDF = sliceSplitSanitizeCSV()
     print(awsPriceDF)
+#    print(saniHardwareDF)
 
 if __name__ == '__main__':
     readExcelIntoDataframe()
