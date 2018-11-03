@@ -7,19 +7,19 @@ import numpy
 
 
 def pullExcelFromGithub():
-    url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/master/hardware.xlsx')
-    pathToExcelFile = Path('ExcelTest.xlsx')
+    url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/development/hardware.xlsx')
+    pathToExcelFile = Path('hardware.xlsx')
     fileNotFound = True
     while fileNotFound is True:
          print("Downloading file . . .")
-         time.sleep(3)
+         time.sleep(1)
          try:
              if pathToExcelFile.is_file():
                  fileNotFound = False
                  print('File downloaded')
                  return fileNotFound
              else:
-                 excelFileFromGithub = urllib.request.urlretrieve(url, filename='ExcelTest.xlsx')
+                 excelFileFromGithub = urllib.request.urlretrieve(url, filename='hardware.xlsx')
          except:
              pass
 
