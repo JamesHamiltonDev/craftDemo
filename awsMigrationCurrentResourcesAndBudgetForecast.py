@@ -60,6 +60,7 @@ def sanitizeDataframe(hardwareData):
      """
     unsanitized = hardwareData
     unsanitized["Department"] = unsanitized["Group"]
+    unsanitized = unsanitized.drop('Group', 1)
     sanitize = unsanitized.apply(lambda x: x.astype(str).str.lower().str.strip())
     sanitize.columns = map(str.upper, sanitize.columns)
     sanitize = sanitize.astype(object).replace('nan', 'None')
@@ -89,14 +90,14 @@ def readExcelIntoDataframe():
 def resourcesByDepartment(departmentResources):
     """ Function receives param from sanitizeDataFrame.  Data is grouped by DEPARTMENT"""
     resourcesBeingUsedByDepartment = departmentResources
-    sumDepartmentResources = resourcesBeingUsedByDepartment.groupby(['GROUP'])[["CPU CORES", "RAM (MB)"]].sum()
+    sumDepartmentResources = resourcesBeingUsedByDepartment.groupby(['DEPARTMENT'])[["CPU CORES", "RAM (MB)"]].sum()
     print(sumDepartmentResources)
 
 
 def resourcesByApplication(applicationResources):
     applicationsDepartment = applicationResources
-    applicationsDepartment = applicationsDepartment.sort_values(['GROUP'])
-    appsGroupedByDepartment = applicationsDepartment.groupby(['GROUP', 'APPLICATION'])[["CPU CORES", "RAM (MB)"]].sum()
+    applicationsDepartment = applicationsDepartment.sort_values(['DEPARTMENT'])
+    appsGroupedByDepartment = applicationsDepartment.groupby(['DEPARTMENT', 'APPLICATION'])[["CPU CORES", "RAM (MB)"]].sum()
     print(appsGroupedByDepartment)
 
 
