@@ -23,12 +23,14 @@ from pathlib import Path
 import time
 import numpy
 
-""" 
-Function to pull an Excel file from the master branch of GitHub repository.
-A continues while loop was created to verify file download before moving to the next function.
-Sleep method added to not bombard Github with requests.
-"""
+
+#
+
+
 def pullExcelFromGithub():
+    """Function to pull an Excel file from the master branch of GitHub repository
+    A continues while loop was created to verify file download before moving to the next function
+    """
     url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/master/hardware.xlsx')
     pathToExcelFile = Path('hardware.xlsx')
     fileNotFound = True
@@ -51,6 +53,10 @@ def pullExcelFromGithub():
 
 
 def sanitizeDataframe(hardwareData):
+    """ Function receives param from readExcelIntoDataFrame.
+     This function sanitizes the data and removes any hardware without t
+     he logical status of operational
+     """
     unsanitized = hardwareData
     sanitize = unsanitized.apply(lambda x: x.astype(str).str.lower().str.strip())
     sanitize.columns = map(str.upper, sanitize.columns)
@@ -62,6 +68,10 @@ def sanitizeDataframe(hardwareData):
 
 
 def readExcelIntoDataframe():
+    """ Function calls pullExcelFromGithub function.  Excel is not returned but verification
+    of file existence.  SciPY module pandas reads Excel and sends it to sanitzeDataFrame function.
+    Returned sanitized dataframe is passed to the functions below to generate the requested output.
+     """
     waitingForDownload = pullExcelFromGithub()
     if waitingForDownload is False:
         hardwareExcelToDataframe = pandas.read_excel(open('hardware.xlsx', 'rb'))
