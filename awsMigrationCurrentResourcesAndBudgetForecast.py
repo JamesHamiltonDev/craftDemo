@@ -61,6 +61,7 @@ def sanitizeDataframe(hardwareData):
      for parity with instructions.  Added a UID column.
      """
     unsanitized = hardwareData
+    unsanitized['UID'] = range(10000, 10000 + len(unsanitized))
     unsanitized[["Department", "Data Center"]] = unsanitized[["Group", "Site"]]
     unsanitized = unsanitized.drop(["Group", "Site"], 1)
     sanitize = unsanitized.apply(lambda x: x.astype(str).str.lower().str.strip())
@@ -70,7 +71,7 @@ def sanitizeDataframe(hardwareData):
     sanitize['CPU CORES'] = sanitize['CPU CORES'].astype(int)
     sanitize['RAM (MB)'] = sanitize['RAM (MB)'].astype(int)
     sanitize = sanitize.reset_index(drop=True)
-    sanitize['UID'] = range(5000, 5000 + len(sanitize))
+
     return sanitize
 
 
