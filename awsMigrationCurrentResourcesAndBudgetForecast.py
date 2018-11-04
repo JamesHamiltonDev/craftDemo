@@ -58,7 +58,7 @@ def sanitizeDataframe(hardwareData):
      This function sanitizes the data and removes any hardware without
      the logical status of operational.  All NaN or nan entries changed to the
      string None.  Group and Site header changed to Department and Data Center
-     for parity with instructions.
+     for parity with instructions.  Added a UID column.
      """
     unsanitized = hardwareData
     unsanitized[["Department", "Data Center"]] = unsanitized[["Group", "Site"]]
@@ -69,6 +69,8 @@ def sanitizeDataframe(hardwareData):
     sanitize = sanitize.loc[sanitize['LOGICAL STATUS'] == "operational"]
     sanitize['CPU CORES'] = sanitize['CPU CORES'].astype(int)
     sanitize['RAM (MB)'] = sanitize['RAM (MB)'].astype(int)
+    sanitize = sanitize.reset_index(drop=True)
+    sanitize['UID'] = range(5000, 5000 + len(sanitize))
     return sanitize
 
 
@@ -155,19 +157,21 @@ def mergeAWSonHardware(hardwareDF):
     awsPriceDF = sliceSplitSanitizeCSV()
 ##  create column in aws for container size to match sani
     saniHardwareDF = saniHardwareDF.loc[saniHardwareDF['OPERATING SYSTEM'] != "windows"]
+
     awsPriceDF["CONTAINER SIZE"] = awsPriceDF["AWS CONTAINER"].str.split('.').str.get(1)
     awsPriceDF = awsPriceDF.replace({'CONTAINER SIZE' : {'micro': 'm', 'small': 's', 'medium': 'm',
                                                             'large': 'l', 'xlarge': 'xl', '2xlarge': '2xl',
                                                             '4xlarge': '4xl', '10xlarge': '10xl',
                                                             '12xlarge': '12xl', '16xlarge': '16xl',
                                                             '24xlarge': '24xl'}})
-#    saniHardwareDF = saniHardwareDF.sort_values(['RAM (MB)'])
-#    mergeColumns = awsPriceDF[["CONTAINER SIZE", "CPU CORES"]]
-    mergedf = pandas.merge(saniHardwareDF, awsPriceDF, on=['CONTAINER SIZE', 'CPU CORES'], suffixes=['_DC', '_AWS'])
-#    print(saniHardwareDF)
-    print(mergedf)
+    saniHardwareDF = saniHardwareDF.sort_values(['RAM (MB)'])
+#
+#    create unique ID for sani after filter and merge
+    mergedf = pandas.merge(saniHardwareDF, awsPriceDF, on=['CONTAINER SIZE', 'CPU CORES'], how='left', suffixes=['_DC', '_AWS'])
+    print(saniHardwareDF)
+#    print(mergedf)
 #    filenameDF = ('testFile.csv')
-#    saniHardwareDF.to_csv(filenameDF)
+#    mergedf.to_csv(filenameDF)
 #
 
 
