@@ -157,22 +157,67 @@ def mergeAWSonHardware(hardwareDF):
     awsPriceDF = sliceSplitSanitizeCSV()
 ##  create column in aws for container size to match sani
     saniHardwareDF = saniHardwareDF.loc[saniHardwareDF['OPERATING SYSTEM'] != "windows"]
+
     awsPriceDF["CONTAINER SIZE"] = awsPriceDF["AWS CONTAINER"].str.split('.').str.get(1)
-    awsPriceDF = awsPriceDF.replace({'CONTAINER SIZE' : {'micro': 'm', 'small': 's', 'medium': 'm',
-                                                            'large': 'l', 'xlarge': 'xl', '2xlarge': '2xl',
-                                                            '4xlarge': '4xl', '10xlarge': '10xl',
-                                                            '12xlarge': '12xl', '16xlarge': '16xl',
-                                                            '24xlarge': '24xl'}})
-    saniHardwareDF = saniHardwareDF.sort_values(['RAM (MB)'])
+#    awsDataFrame = pandas.DataFrame(awsPriceDF, columns=['RAM (MB)', 'CONTAINER SIZE', 'CPU CORES',
+                                                         'HOURLY COSTS', 'AWS CONTAINER'])
+#    awsPriceDF["CONTAINER COM"] = awsPriceDF["CONTAINER SIZE"]
+    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
+        lambda x: x.astype(str).str.replace('micro', '1').str.replace('small', '2'))
+    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
+        lambda x: x.astype(str).str.replace('medium', '1').str.replace('24xlarge', '10'))
+    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
+        lambda x: x.astype(str).str.replace('16xlarge', '9').str.replace('12xlarge', '8'))
+    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
+        lambda x: x.astype(str).str.replace('10xlarge', '7').str.replace('4xlarge', '6'))
+    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
+        lambda x: x.astype(str).str.replace('2xlarge', '6').str.replace('xlarge', '5'))
+    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
+        lambda x: x.astype(str).str.replace('large', '4'))
+    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
+        lambda x: x.astype(int))
+
+#        .'small': '2', 'medium': '2',
+#                                                                          'large': '4', 'xlarge': '5', '2xlarge': '6',
+#                                                                          '4xlarge': '6', '10xlarge': '7',
+#                                                                          '12xlarge': '8', '16xlarge': '9',
+#                                                                          '24xlarge': '10'}})
+#    saniHardwareDF["CONTAINER COM"] = saniHardwareDF["CONTAINER SIZE"]
+#    awsPriceDF["CONTAINER COM"] = awsPriceDF.replace({'CONTAINER SIZE': {'micro': 1, 'small': 2, 'medium': 2,
+#                                                                         'large': 4, 'xlarge': 5, '2xlarge': 6,
+#                                                                         '4xlarge': 6, '10xlarge': 7,
+#                                                                         '12xlarge': 8, '16xlarge': 9,
+#                                                                         '24xlarge': 10}})
+    saniHardwareDF = saniHardwareDF.sort_values(['UID'])
     lenSaniHardwareDF = len(saniHardwareDF)
 
-    mergedf = pandas.merge(saniHardwareDF, awsPriceDF, on=['CONTAINER SIZE', 'CPU CORES'], how='outer', suffixes=['_DC', '_AWS'])
+    mergedf = pandas.merge(saniHardwareDF, awsPriceDF, on=['CPU CORES'], how='outer', suffixes=['_DC', '_AWS'])
+    mergedf[["RAM (MB)_AWS", "RAM (MB)_DC"]] = mergedf[["RAM (MB)_AWS", "RAM (MB)_DC"]].fillna(0)
+    mergedf[["RAM (MB)_AWS", "RAM (MB)_DC"]] = mergedf[["RAM (MB)_AWS", "RAM (MB)_DC"]].astype(int)
+    mergedf[["CONTAINER SIZE_DC", "CONTAINER SIZE_AWS"]] = mergedf[["CONTAINER SIZE_DC",
+                                                                    "CONTAINER SIZE_AWS"]].apply(lambda x: x.astype(str).str.lower().str.strip().str.replace(' ', ''))
+    mergedf = mergedf.sort_values(['UID'])
+#    unsanitized.apply(lambda x: x.astype(str).str.lower().str.strip())
 #    print(saniHardwareDF)
-    groupByUID = mergedf.groupby(['UID'])[["RAM (MB)_DC", "RAM (MB)_AWS"]]
-    print(lenSaniHardwareDF)
-    filenameDF = ('testFile.csv')
-    mergedf.to_csv(filenameDF)
+#    groupByUID = mergedf.groupby(['UID'])[["RAM (MB)_DC", "RAM (MB)_AWS"]].apply(lamba x: x)
+#    mergedf['COMram'] = numpy.where(mergedf['RAM (MB)_AWS'] >= ["RAM (MB)_DC"], 'yes')
 #
+#    mergedf['TEST'] = (mergedf['CONTAINER SIZE_DC']) == (mergedf['CONTAINER SIZE_AWS'])
+#    comparedf['CHECK'] = comparedf.loc[comparedf['CHECK'] == True]
+ #    mergedf = mergedf.loc[mergedf['COMSIZE'] == True]
+#    comparedf = mergedf[["UID", "CONTAINER SIZE_AWS", "CONTAINER SIZE_DC", "COMSIZE", "RAM (MB)_AWS", "RAM (MB)_DC"]]
+#    print(comparedf)
+    print(""
+          ""
+          "")
+    print(lenSaniHardwareDF)
+    print(mergedf['UID'].nunique())
+    print(awsDataFrame)
+#    print(len(comparedf))
+#    filenameDF = ('testFile.csv')
+#    mergedf.to_csv(filenameDF)
+#
+
 
 
 if __name__ == '__main__':
