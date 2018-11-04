@@ -17,6 +17,7 @@ for the next 3 years.
 """
 
 import pandas
+pandas.set_option('display.width', 300)
 #import git
 import urllib.request
 from pathlib import Path
@@ -148,11 +149,27 @@ def sliceSplitSanitizeCSV():
 
 
 def mergeAWSonHardware(hardwareDF):
-    """ Function receives param from sanitizeDataframe. """
+    """ Function receives param from sanitizeDataframe. Drop Windows systems from list since all new systems
+    will be RHEL based.  """
     saniHardwareDF = pandas.DataFrame(hardwareDF)
     awsPriceDF = sliceSplitSanitizeCSV()
-    print(awsPriceDF)
+##  create column in aws for container size to match sani
+    saniHardwareDF = saniHardwareDF.loc[saniHardwareDF['OPERATING SYSTEM'] != "windows"]
+    awsPriceDF["CONTAINER SIZE"] = awsPriceDF["AWS CONTAINER"].str.split('.').str.get(1)
+    awsPriceDF = awsPriceDF.replace({'CONTAINER SIZE' : {'micro': 'm', 'small': 's', 'medium': 'm',
+                                                            'large': 'l', 'xlarge': 'xl', '2xlarge': '2xl',
+                                                            '4xlarge': '4xl', '10xlarge': '10xl',
+                                                            '12xlarge': '12xl', '16xlarge': '16xl',
+                                                            '24xlarge': '24xl'}})
+#    saniHardwareDF = saniHardwareDF.sort_values(['RAM (MB)'])
+#    mergeColumns = awsPriceDF[["CONTAINER SIZE", "CPU CORES"]]
+    mergedf = pandas.merge(saniHardwareDF, awsPriceDF, on=['CONTAINER SIZE', 'CPU CORES'], suffixes=['_DC', '_AWS'])
 #    print(saniHardwareDF)
+    print(mergedf)
+#    filenameDF = ('testFile.csv')
+#    saniHardwareDF.to_csv(filenameDF)
+#
+
 
 if __name__ == '__main__':
     readExcelIntoDataframe()
