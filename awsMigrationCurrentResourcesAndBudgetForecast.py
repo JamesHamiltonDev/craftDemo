@@ -312,7 +312,7 @@ def toGitHub():
     commit_message = 'test'
     repo.index.add(file_list)
     repo.index.commit(commit_message)
-    origin = repo.remote('origin')
+    origin = repo.remote('origin development')
     origin.push()
 
 
