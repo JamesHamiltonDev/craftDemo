@@ -23,7 +23,8 @@ import urllib.request
 from pathlib import Path
 import time
 import os
-import git
+from git import Repo
+import github
 import calendar
 
 
@@ -305,12 +306,14 @@ def getHostingCost(matchesDF):
 
 
 def toGitHub():
-    ##
-    ## Git is blocking some of my pushes.  Returning to testing tomorrow.  Maybe try some more tonight as well.
-    ##
-    os.system("git commit")
-    #os.system("git request-pull origin/master origindevelopment")
-
+    repo_dir = '.'
+    repo = Repo(repo_dir)
+    file_list = ['/home/snarf/PycharmProjects/craftDemo/awsMigrationCurrentResourcesAndBudgetForecast.py']
+    commit_message = 'test'
+    repo.index.add(file_list)
+    repo.index.commit(commit_message)
+    origin = repo.remote('origin')
+    origin.push()
 
 
 if __name__ == '__main__':
