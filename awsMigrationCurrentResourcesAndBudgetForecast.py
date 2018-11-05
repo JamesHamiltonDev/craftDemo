@@ -306,7 +306,7 @@ def getHostingCost(matchesDF):
 
 def toGitHub():
     ##
-    ## Git is blocking some of my pushes.  Returning to testing tomorrow.
+    ## Git is blocking some of my pushes.  Returning to testing tomorrow.  Maybe try some more tonight as well.
     ##
     os.system("git commit")
     #os.system("git request-pull origin/master origindevelopment")
