@@ -18,14 +18,13 @@ for the next 3 years.
 
 import pandas
 pandas.set_option('display.width', 300)
-#import git
+pandas.set_option('display.max_rows', 2000)
 import urllib.request
 from pathlib import Path
 import time
-import numpy
+import os
+import calendar
 
-
-#
 
 
 def pullExcelFromGithub():
@@ -122,8 +121,6 @@ def resourcesByDataCenter(dataCenterResources):
 
 
 def readAWScsv():
-    """ AWS csv read into pandas data frame and returned.
-    """
     awsCSV = pandas.read_csv('amazonEC2prices.csv')
     return awsCSV
 
@@ -139,7 +136,9 @@ def sliceSplitSanitizeCSV():
     awsCSVdataframe = readAWScsv()
     awsCSVdataframe = awsCSVdataframe.apply(lambda x: x.astype(str).str.lower().str.strip())
     awsCSVdataframe['RAM (GiB)'] = awsCSVdataframe['RAM (GiB)'].str.replace(' gib', '')
-    awsCSVdataframe[["cpu", "RAM (GiB)"]] = awsCSVdataframe[["cpu", "RAM (GiB)"]].astype(int)
+    awsCSVdataframe[["cpu"]] = awsCSVdataframe[["cpu"]].apply(lambda x: x.astype(int))
+    awsCSVdataframe[["RAM (GiB)"]] = awsCSVdataframe[["RAM (GiB)"]].apply(lambda x: x.astype(str).str.replace(',', ''))
+    awsCSVdataframe[["RAM (GiB)"]] = awsCSVdataframe[["RAM (GiB)"]].apply(lambda x: x.astype(float))
     awsCSVdataframe["RAM (MB)"] = awsCSVdataframe["RAM (GiB)"].apply(lambda x: (x * 8589934592) / 8000000).astype(int)
     awsCSVdataframe["hourly cost"] = awsCSVdataframe["hourly cost"].str.replace('$', '').str.split(' ').str.get(0).astype(float)
     awsCSVdataframe["gregorian year cost"] = awsCSVdataframe["hourly cost"].apply(lambda x: x * 8760).astype(float)
@@ -150,75 +149,164 @@ def sliceSplitSanitizeCSV():
     return awsCSVdataframe
 
 
+def matchRemaining(remainDC, awsC):
+    remainDF = pandas.DataFrame(remainDC)
+    remainDF = remainDF.sort_values(['RAM (MB)'])
+    remainDF[["CPU CORES"]] = remainDF[["CPU CORES"]].apply(lambda x: x.astype(str).str.replace('1', '2'))
+    remainDF[["CPU CORES"]] = remainDF[["CPU CORES"]].apply(lambda x: x.astype(int))
+    remainDFtuple = tuple(list(remainDF['RAM (MB)'].drop_duplicates()))
+    remainDF = remainDF.sort_values(['RAM (MB)'])
+    awsDF = pandas.DataFrame(awsC)
+    awsDF = awsDF.sort_values(['RAM (MB)'])
+    awsDFtuple = tuple(list(awsDF['RAM (MB)'].drop_duplicates()))
+    listRemain = []
+    for ramDC in remainDFtuple:
+        remainRAM = remainDF.loc[remainDF['RAM (MB)'] == ramDC]
+        for ramAWS in awsDFtuple:
+            if ramAWS > ramDC:
+                awsRam = awsDF.loc[awsDF['RAM (MB)'] == ramAWS]
+                mergeRam = pandas.merge(remainRAM, awsRam, on=['CPU CORES'], how='inner',
+                                        suffixes=['_DC', '_AWS'])
+                listRemain.append(mergeRam)
+            else:
+                pass
+    listRemain = pandas.concat(listRemain, axis=0, ignore_index=True)
+    listRemain = listRemain.drop_duplicates(subset=['UID'], keep='first')
+    listRemain = listRemain.reset_index(drop=True)
+    return(listRemain)
+
+
+def ramCheckAndMerge(dc, aws):
+    ramDCframe = pandas.DataFrame(dc)
+    ramAWSframe = pandas.DataFrame(aws)
+    saniHardwareUniqueRam = tuple(list(ramDCframe['RAM (MB)'].drop_duplicates()))
+    ramAWSframe = ramAWSframe.sort_values(['RAM (MB)'])
+    ramDCframe = ramDCframe.sort_values(['RAM (MB)'])
+    awsUniqueRam = tuple(list(ramAWSframe['RAM (MB)'].drop_duplicates()))
+    listDF = []
+    for ramDC in saniHardwareUniqueRam:
+        saniRam = ramDCframe.loc[ramDCframe['RAM (MB)'] == ramDC]
+        for ramAWS in awsUniqueRam:
+            if ramAWS > ramDC:
+                awsRam = ramAWSframe.loc[ramAWSframe['RAM (MB)'] == ramAWS]
+                mergeRam = pandas.merge(saniRam, awsRam, on=['CPU CORES'], how='inner',
+                                           suffixes=['_DC', '_AWS'])
+                listDF.append(mergeRam)
+            else:
+                pass
+
+    listDF = pandas.concat(listDF, axis=0, ignore_index=True)
+    listDF = listDF.drop_duplicates(subset=['UID'], keep='first')
+    listDF = listDF.reset_index(drop=True)
+    remaining = pandas.DataFrame()
+    remaining = ramDCframe[(~ramDCframe.UID.isin(listDF.UID))]
+    remainDF = matchRemaining(remaining, ramAWSframe)
+    frames = [listDF, remainDF]
+    concatDF = pandas.concat(frames, axis=0, ignore_index=True)
+    concatDF = concatDF.sort_values(['UID'])
+    concatDF = concatDF.reset_index(drop=True)
+    return concatDF
+
+
 def mergeAWSonHardware(hardwareDF):
     """ Function receives param from sanitizeDataframe. Drop Windows systems from list since all new systems
-    will be RHEL based.  """
+    will be RHEL based.
+    """
     saniHardwareDF = pandas.DataFrame(hardwareDF)
     awsPriceDF = sliceSplitSanitizeCSV()
-##  create column in aws for container size to match sani
     saniHardwareDF = saniHardwareDF.loc[saniHardwareDF['OPERATING SYSTEM'] != "windows"]
+    allMatches = ramCheckAndMerge(saniHardwareDF, awsPriceDF)
+    getHostingCost(allMatches)
 
-    awsPriceDF["CONTAINER SIZE"] = awsPriceDF["AWS CONTAINER"].str.split('.').str.get(1)
-#    awsDataFrame = pandas.DataFrame(awsPriceDF, columns=['RAM (MB)', 'CONTAINER SIZE', 'CPU CORES',
-                                                         'HOURLY COSTS', 'AWS CONTAINER'])
-#    awsPriceDF["CONTAINER COM"] = awsPriceDF["CONTAINER SIZE"]
-    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
-        lambda x: x.astype(str).str.replace('micro', '1').str.replace('small', '2'))
-    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
-        lambda x: x.astype(str).str.replace('medium', '1').str.replace('24xlarge', '10'))
-    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
-        lambda x: x.astype(str).str.replace('16xlarge', '9').str.replace('12xlarge', '8'))
-    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
-        lambda x: x.astype(str).str.replace('10xlarge', '7').str.replace('4xlarge', '6'))
-    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
-        lambda x: x.astype(str).str.replace('2xlarge', '6').str.replace('xlarge', '5'))
-    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
-        lambda x: x.astype(str).str.replace('large', '4'))
-    awsDataFrame[["CONTAINER SIZE"]] = awsDataFrame[["CONTAINER SIZE"]].apply(
-        lambda x: x.astype(int))
 
-#        .'small': '2', 'medium': '2',
-#                                                                          'large': '4', 'xlarge': '5', '2xlarge': '6',
-#                                                                          '4xlarge': '6', '10xlarge': '7',
-#                                                                          '12xlarge': '8', '16xlarge': '9',
-#                                                                          '24xlarge': '10'}})
-#    saniHardwareDF["CONTAINER COM"] = saniHardwareDF["CONTAINER SIZE"]
-#    awsPriceDF["CONTAINER COM"] = awsPriceDF.replace({'CONTAINER SIZE': {'micro': 1, 'small': 2, 'medium': 2,
-#                                                                         'large': 4, 'xlarge': 5, '2xlarge': 6,
-#                                                                         '4xlarge': 6, '10xlarge': 7,
-#                                                                         '12xlarge': 8, '16xlarge': 9,
-#                                                                         '24xlarge': 10}})
-    saniHardwareDF = saniHardwareDF.sort_values(['UID'])
-    lenSaniHardwareDF = len(saniHardwareDF)
+def gYearEngineerTeam(financial, perc, col):
+    finDF = pandas.DataFrame(financial)
+    colLength = len(finDF.columns)
+    if colLength < 22:
+        finDF[col] = finDF['GREGORIAN YEAR COST'].apply(lambda x: (x * perc))
+        engineerTeams = ['engineering', 'engineering canada']
+        engineering = finDF[finDF.DEPARTMENT.isin(engineerTeams)]
+        return engineering
+    else:
+        splitCol = int(col.split(" ", 1)[0])
+        splitCol = str(splitCol - 1)
+        newCol = (splitCol + " COST")
+        finDF[col] = finDF[newCol].apply(lambda x: (x * perc))
+        engineerTeams = ['engineering', 'engineering canada']
+        engineering = finDF[finDF.DEPARTMENT.isin(engineerTeams)]
+        return engineering
 
-    mergedf = pandas.merge(saniHardwareDF, awsPriceDF, on=['CPU CORES'], how='outer', suffixes=['_DC', '_AWS'])
-    mergedf[["RAM (MB)_AWS", "RAM (MB)_DC"]] = mergedf[["RAM (MB)_AWS", "RAM (MB)_DC"]].fillna(0)
-    mergedf[["RAM (MB)_AWS", "RAM (MB)_DC"]] = mergedf[["RAM (MB)_AWS", "RAM (MB)_DC"]].astype(int)
-    mergedf[["CONTAINER SIZE_DC", "CONTAINER SIZE_AWS"]] = mergedf[["CONTAINER SIZE_DC",
-                                                                    "CONTAINER SIZE_AWS"]].apply(lambda x: x.astype(str).str.lower().str.strip().str.replace(' ', ''))
-    mergedf = mergedf.sort_values(['UID'])
-#    unsanitized.apply(lambda x: x.astype(str).str.lower().str.strip())
-#    print(saniHardwareDF)
-#    groupByUID = mergedf.groupby(['UID'])[["RAM (MB)_DC", "RAM (MB)_AWS"]].apply(lamba x: x)
-#    mergedf['COMram'] = numpy.where(mergedf['RAM (MB)_AWS'] >= ["RAM (MB)_DC"], 'yes')
-#
-#    mergedf['TEST'] = (mergedf['CONTAINER SIZE_DC']) == (mergedf['CONTAINER SIZE_AWS'])
-#    comparedf['CHECK'] = comparedf.loc[comparedf['CHECK'] == True]
- #    mergedf = mergedf.loc[mergedf['COMSIZE'] == True]
-#    comparedf = mergedf[["UID", "CONTAINER SIZE_AWS", "CONTAINER SIZE_DC", "COMSIZE", "RAM (MB)_AWS", "RAM (MB)_DC"]]
-#    print(comparedf)
-    print(""
-          ""
-          "")
-    print(lenSaniHardwareDF)
-    print(mergedf['UID'].nunique())
-    print(awsDataFrame)
-#    print(len(comparedf))
-#    filenameDF = ('testFile.csv')
-#    mergedf.to_csv(filenameDF)
-#
+
+def lYearEngineerTeam(fin, p, c):
+    splitCol = int(c.split(" ", 1)[0])
+    splitCol = str(splitCol - 1)
+    newCol = (splitCol + " COST")
+    leapPercInc = p + 0.0027
+    fin[c] = fin[newCol].apply(lambda x: (x * leapPercInc))
+    engineerTeams = ['engineering', 'engineering canada']
+    engineering = fin[fin.DEPARTMENT.isin(engineerTeams)]
+    return engineering
+
+
+def salesTeam(sfin, scol):
+    sfinDF = pandas.DataFrame(sfin)
+    sfinDF = sfinDF.loc[sfinDF['DEPARTMENT'] == "sales"]
+    sfinDF["DISCOUNT"] = sfin['GREGORIAN YEAR COST'].apply(lambda x: (x * .80))
+    sfinDF[scol] = sfin['GREGORIAN YEAR COST'].apply(lambda x: (x - sfinDF['DISCOUNT']))
+    sfinDF = sfinDF.drop(['DISCOUNT'], 1)
+    sfinDF['2020 COST'] = 0
+    sfinDF['2021 COST'] = 0
+    return sfinDF
+
+
+def remainingTeams(rfin):
+    rfinDF = pandas.DataFrame(rfin)
+    rTeams = ['engineering', 'engineering canada', 'sales']
+    rfinDF = rfinDF[~rfinDF.DEPARTMENT.isin(rTeams)]
+    rfinDF['2019 COST'] = rfinDF['GREGORIAN YEAR COST']
+    rfinDF['2020 COST'] = rfinDF['LEAP YEAR COST']
+    rfinDF['2021 COST'] = rfinDF['GREGORIAN YEAR COST']
+    return rfinDF
+
+
+def getHostingCost(matchesDF):
+    hostingDF = pandas.DataFrame(matchesDF)
+    year2019 = (calendar.isleap(2019))
+    year2020 = (calendar.isleap(2020))
+    year2021 = (calendar.isleap(2021))
+
+    efinReport = pandas.DataFrame(hostingDF)
+    sfinReport = pandas.DataFrame(hostingDF)
+    rfinReport = pandas.DataFrame(hostingDF)
+    f2019col = ("2019 COST")
+    f2020col = ("2020 COST")
+    f2021col = ("2021 COST")
+    if year2019 == False:
+        engineer2019 = gYearEngineerTeam(efinReport, 1.10, f2019col)
+    else:
+        engineer2019 = lYearEngineerTeam(efinReport, 1.10, f2019col)
+    if year2020 == False:
+        engineer2020 = gYearEngineerTeam(efinReport, 1.25, f2020col)
+    else:
+        engineer2020 = lYearEngineerTeam(efinReport, 1.25, f2020col)
+    if year2021 == False:
+        engineer2021 = gYearEngineerTeam(efinReport, 1.40, f2021col)
+    else:
+        engineer2021 = lYearEngineerTeam(efinReport, 1.40, f2021col)
+    salesF = salesTeam(sfinReport, f2019col)
+    rfinancial = remainingTeams(rfinReport)
+    fframes = [engineer2021, salesF, rfinancial]
+    concatFinacialReport =pandas.concat(fframes, axis=0, ignore_index=True)
+    concatFinacialReport = concatFinacialReport.sort_values(['DEPARTMENT'])
+    groupedFinacialReport = concatFinacialReport.groupby(['DEPARTMENT'])[["2019 COST", "2020 COST", "2021 COST"]].sum()
+    print(groupedFinacialReport)
+
+
+def toGitHub():
+    pass
 
 
 
 if __name__ == '__main__':
+
     readExcelIntoDataframe()
