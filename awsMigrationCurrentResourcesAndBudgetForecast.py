@@ -23,6 +23,7 @@ import urllib.request
 from pathlib import Path
 import time
 import os
+import git
 import calendar
 
 
@@ -300,10 +301,12 @@ def getHostingCost(matchesDF):
     concatFinacialReport = concatFinacialReport.sort_values(['DEPARTMENT'])
     groupedFinacialReport = concatFinacialReport.groupby(['DEPARTMENT'])[["2019 COST", "2020 COST", "2021 COST"]].sum()
     print(groupedFinacialReport)
+    toGitHub()
 
 
 def toGitHub():
-    pass
+    os.system("git commit")
+    #os.system("git request-pull origin/master origindevelopment")
 
 
 
