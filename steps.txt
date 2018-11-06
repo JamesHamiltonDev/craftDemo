@@ -1,0 +1,28 @@
+Build the basic code first
+    request one file 
+    use csv from pricing list
+    create basic finance report
+    
+Create AWS instance from script
+    Script runs on local (but could be from anywhere)
+        boto3
+        AWS CLI
+    install dependencies
+    clone repository
+    run script
+    output to github
+        name and date files
+    
+Create AWS instance with Docker
+    Create dockerfile
+        test
+        upload to Git
+    Install dependencies on AWS instance
+        Docker
+        Git
+    Run program within Docker Image
+    
+Enhancements
+    Finance Report
+    AWS API Queries
+    Mail Excel File to Outlook

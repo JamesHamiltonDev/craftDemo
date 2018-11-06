@@ -1,0 +1,78 @@
+aws container,cpu,ecu,RAM (GiB),instance storage,hourly cost
+t3.micro,2,Variable,1 GiB,EBS Only,$0.0704 per Hour
+t3.small,2,Variable,2 GiB,EBS Only,$0.0808 per Hour
+t3.medium,2,Variable,4 GiB,EBS Only,$0.1016 per Hour
+t3.large,2,Variable,8 GiB,EBS Only,$0.1432 per Hour
+t3.xlarge,4,Variable,16 GiB,EBS Only,$0.2264 per Hour
+t3.2xlarge,8,Variable,32 GiB,EBS Only,$0.4628 per Hour
+t2.micro,1,Variable,1 GiB,EBS Only,$0.0716 per Hour
+t2.small,1,Variable,2 GiB,EBS Only,$0.083 per Hour
+t2.medium,2,Variable,4 GiB,EBS Only,$0.1064 per Hour
+t2.large,2,Variable,8 GiB,EBS Only,$0.1528 per Hour
+t2.xlarge,4,Variable,16 GiB,EBS Only,$0.2456 per Hour
+t2.2xlarge,8,Variable,32 GiB,EBS Only,$0.5012 per Hour
+m5.large,2,8,8 GiB,EBS Only,$0.156 per Hour
+m5.xlarge,4,16,16 GiB,EBS Only,$0.252 per Hour
+m5.2xlarge,8,31,32 GiB,EBS Only,$0.514 per Hour
+m5.4xlarge,16,60,64 GiB,EBS Only,$0.898 per Hour
+m5.12xlarge,48,173,192 GiB,EBS Only,$2.434 per Hour
+m5.24xlarge,96,345,384 GiB,EBS Only,$4.738 per Hour
+m5d.large,2,8,8 GiB,1 x 75 NVMe SSD,$0.173 per Hour
+m5d.xlarge,4,16,16 GiB,1 x 150 NVMe SSD,$0.286 per Hour
+m5d.2xlarge,8,31,32 GiB,1 x 300 NVMe SSD,$0.582 per Hour
+m5d.4xlarge,16,60,64 GiB,2 x 300 NVMe SSD,$1.034 per Hour
+m5d.12xlarge,48,173,192 GiB,2 x 900 NVMe SSD,$2.842 per Hour
+m5d.24xlarge,96,345,384 GiB,4 x 900 NVMe SSD,$5.554 per Hour
+m4.large,2,6.5,8 GiB,EBS Only,$0.16 per Hour
+m4.xlarge,4,13,16 GiB,EBS Only,$0.26 per Hour
+m4.2xlarge,8,26,32 GiB,EBS Only,$0.53 per Hour
+m4.4xlarge,16,53.5,64 GiB,EBS Only,$0.93 per Hour
+m4.10xlarge,40,124.5,160 GiB,EBS Only,$2.13 per Hour
+m4.16xlarge,64,188,256 GiB,EBS Only,$3.33 per Hour
+c5.large ,2,9,4 GiB ,EBS Only ,$0.145 per Hour
+c5.xlarge ,4,17,8 GiB ,EBS Only ,$0.23 per Hour
+c5.2xlarge ,8,34,16 GiB ,EBS Only ,$0.47 per Hour
+c5.4xlarge ,16,68,32 GiB ,EBS Only ,$0.81 per Hour
+c5.9xlarge ,36,141,72 GiB ,EBS Only ,$1.66 per Hour
+c5.18xlarge ,72,281,144 GiB ,EBS Only ,$3.19 per Hour
+c5d.large ,2,9,4 GiB ,1 x 50 NVMe SSD ,$0.156 per Hour
+c5d.xlarge ,4,17,8 GiB ,1 x 100 NVMe SSD ,$0.252 per Hour
+c5d.2xlarge ,8,34,16 GiB ,1 x 200 NVMe SSD ,$0.514 per Hour
+c5d.4xlarge ,16,68,32 GiB ,1 x 400 NVMe SSD ,$0.898 per Hour
+c5d.9xlarge ,36,141,72 GiB ,1 x 900 NVMe SSD ,$1.858 per Hour
+c5d.18xlarge ,72,281,144 GiB ,1 x 1800 NVMe SSD ,$3.586 per Hour
+c4.large ,2,8,3.75 GiB ,EBS Only ,$0.16 per Hour
+c4.xlarge ,4,16,7.5 GiB ,EBS Only ,$0.259 per Hour
+c4.2xlarge ,8,31,15 GiB ,EBS Only ,$0.528 per Hour
+c4.4xlarge ,16,62,30 GiB ,EBS Only ,$0.926 per Hour
+c4.8xlarge ,36,132,60 GiB ,EBS Only ,$1.721 per Hour
+p3.2xlarge,8,26,61 GiB,EBS Only,$3.19 per Hour
+p3.8xlarge,32,94,244 GiB,EBS Only,$12.37 per Hour
+p3.16xlarge,64,188,488 GiB,EBS Only,$24.61 per Hour
+p2.xlarge,4,12,61 GiB,EBS Only,$0.96 per Hour
+p2.8xlarge,32,94,488 GiB,EBS Only,$7.33 per Hour
+p2.16xlarge,64,188,768 GiB,EBS Only,$14.53 per Hour
+g3.4xlarge,16,47,122 GiB,EBS Only,$1.27 per Hour
+g3.8xlarge,32,94,244 GiB,EBS Only,$2.41 per Hour
+g3.16xlarge,64,188,488 GiB,EBS Only,$4.69 per Hour
+g3s.xlarge,4,13,30.5 GiB,EBS Only,$0.81 per Hour
+x1.16xlarge,64,174.5,976 GiB,1 x 1920 SSD,$6.799 per Hour
+x1.32xlarge,128,349,"1,952 GiB",2 x 1920 SSD,$13.468 per Hour
+r5.large,2,10,16 GiB,EBS Only,$0.186 per Hour
+r5.xlarge,4,19,32 GiB,EBS Only,$0.312 per Hour
+r5.2xlarge,8,38,64 GiB,EBS Only,$0.634 per Hour
+r5.4xlarge,16,71,128 GiB,EBS Only,$1.138 per Hour
+r5.12xlarge,48,173,384 GiB,EBS Only,$3.154 per Hour
+r5.24xlarge,96,347,768 GiB,EBS Only,$6.178 per Hour
+r5d.large,2,10,16 GiB,1 x 75 NVMe SSD,$0.204 per Hour
+r5d.xlarge,4,19,32 GiB,1 x 150 NVMe SSD,$0.348 per Hour
+r5d.2xlarge,8,38,64 GiB,1 x 300 NVMe SSD,$0.706 per Hour
+r5d.4xlarge,16,71,128 GiB,2 x 300 NVMe SSD,$1.282 per Hour
+r5d.12xlarge,48,173,384 GiB,2 x 900 NVMe SSD,$3.586 per Hour
+r5d.24xlarge,96,347,768 GiB,4 x 900 NVMe SSD,$7.042 per Hour
+r4.large,2,7,15.25 GiB,EBS Only,$0.193 per Hour
+r4.xlarge,4,13.5,30.5 GiB,EBS Only,$0.396 per Hour
+r4.2xlarge,8,27,61 GiB,EBS Only,$0.662 per Hour
+r4.4xlarge,16,53,122 GiB,EBS Only,$1.194 per Hour
+r4.8xlarge,32,99,244 GiB,EBS Only,$2.258 per Hour
+r4.16xlarge,64,195,488 GiB,EBS Only,$4.386 per Hour
