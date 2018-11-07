@@ -22,9 +22,15 @@ pandas.set_option('display.max_rows', 2000)
 import urllib.request
 from pathlib import Path
 import time
+import os
+from git import Repo
+import github
 import json
 import calendar
 import requests
+import pprint
+import subprocess
+import base64
 
 
 
@@ -307,13 +313,48 @@ def getHostingCost(matchesDF):
 
 
 def toGitHub():
-    pass
+    #label = subprocess.check_output(["git", "describe"]).strip()
+    #print(label)
     #repo_dir = '.'
     #repo = Repo(repo_dir)
-    #file_list = ['awsMigrationCurrentResourcesAndBudgetForecast.py']
-    #username = 'JamesHamiltonDev'
-    #token = ('635190c16b405e90223b37658953621cbe83bedb')
-    #login = requests.get('https://api.github.com/search/repositories?q=github+api', auth=(username, token))
+    filename = "awsMigrationCurrentResourcesAndBudgetForecast.py"
+    #openFile = open("awsMigrationCurrentResourcesAndBudgetForecast.py", "r").read()
+    encodedFile = base64.b64encode(open(filename,"rb").read())
+    #print(encodedFile)
+    name = "James Hamilton"
+    username = "jameshamiltonwork887@outlook.com"
+    token = "2b9edf53384387611c5908924ff27482da7bbbbf"
+    branch = "development"
+    url = "https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents"+filename
+    fullURL = "https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents"+filename+'?ref='+branch
+    data = requests.get(url+'?ref='+branch, headers = {"Authorization": "token "+token}).json()
+#        ('https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents/awsMigrationCurrentResourcesAndBudgetForecast.py?ref=development',
+#                        auth=(username, token)).json()
+    sha = data['sha']
+    #getSHAlastcommit = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/development', auth=(username, token))
+###    getSHAblob = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/trees/development',
+###                              auth=(username, token))
+###    get_url_json = getSHAblob.json()
+###    urlElement = get_url_json['tree'][3]['sha']
+#    pprint.pprint(data)
+    if encodedFile.decode('utf-8') + "\n" != data['content']:
+        message = json.dumps({"message": "update", "content": encodedFile.decode("utf-8"), "branch": branch,
+                              "sha": sha, "name": name, "email": username})
+#    #payload = "{\"message\":"+message+",\"content\":\""+encodedFile+",\"sha\":"+urlElement+",\"branch\":\""+branch+",\"name\":"+name+",\"email\":"+username+"\"}"
+        updateCode = requests.put(fullURL, data=message, headers={"Content-Type": "application/json", "Authorization": "token "+token})
+        print(updateCode)
+    else:
+        print("nothing to update")
+    #urlSHAblob = urlElement['mode'{4}]
+    #print(type(get_url_json))
+
+    #pprint.pprint(get_url_json)
+   # getSHAbasetree = requests.get(urlSHAvalueLastCommit, auth=(username, token))
+    #get_url_json = getSHAlastcommit.json()
+    #print(type(get_url_json))**
+
+    #print(urlSHAblob)
+    ####
     #login.text
     #commit_message = 'test'
     #repo.index.add(file_list)
