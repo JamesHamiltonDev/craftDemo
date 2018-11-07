@@ -316,8 +316,9 @@ def toGitHub():
     #file_list = ['awsMigrationCurrentResourcesAndBudgetForecast.py']
     username = 'JamesHamiltonDev'
     token = ('60800ecbf9dc2b42f910d9f9d7526b2bef08301d')
-    getSHA = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/master', auth=(username, token))
-    print(getSHA)
+
+    #getSHA = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/master')
+    print(geturl)
     #login.text
     #commit_message = 'test'
     #repo.index.add(file_list)
