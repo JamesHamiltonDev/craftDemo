@@ -28,6 +28,9 @@ import github
 import json
 import calendar
 import requests
+import pprint
+import subprocess
+import base64
 
 
 
@@ -310,17 +313,34 @@ def getHostingCost(matchesDF):
 
 
 def toGitHub():
-    repo_dir = '.'
-    repo = Repo(repo_dir)
-    file_list = ['awsMigrationCurrentResourcesAndBudgetForecast.py']
-    username = 'JamesHamiltonDev'
-    token = ('635190c16b405e90223b37658953621cbe83bedb')
-    login = requests.get('https://api.github.com/search/repositories?q=github+api', auth=(username, token))
-    login.text
-    commit_message = 'test'
-    repo.index.add(file_list)
-    repo.index.commit(commit_message)
-    origin = repo.remote('https://github.com/JamesHamiltonDev/craftDemo/tree/development')
+    #label = subprocess.check_output(["git", "describe"]).strip()
+    #print(label)
+    #repo_dir = '.'
+    #repo = Repo(repo_dir)
+    #file_list = ['awsMigrationCurrentResourcesAndBudgetForecast.py']
+    openFile = open("awsMigrationCurrentResourcesAndBudgetForecast.py", "r").read()
+    encodedFile = base64.b64decode(openFile)
+    #print(encodedFile)
+    username = ("jameshamiltonwork887@outlook.com")
+    token = ('625dc2679543f127a5826a2b042be5fdc1fc3030')
+#    getSHAlastcommit = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/development', auth=(username, token))
+    getSHAblob = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/trees/development', auth=(username, token))
+    get_url_json = getSHAblob.json()
+    urlElement = get_url_json['tree']
+    #urlSHAblob = urlElement['url']
+    print(type(get_url_json))
+    #pprint.pprint(get_url_json)
+   # getSHAbasetree = requests.get(urlSHAvalueLastCommit, auth=(username, token))
+    #get_url_json = getSHAlastcommit.json()
+    #print(type(get_url_json))
+    pprint.pprint(urlElement)
+    #print(urlSHAblob)
+    #
+    #login.text
+    #commit_message = 'test'
+    #repo.index.add(file_list)
+    #repo.index.commit(commit_message)
+    #origin = repo.remote('https://github.com/JamesHamiltonDev/craftDemo/tree/development')
 
 
     #origin.push()
