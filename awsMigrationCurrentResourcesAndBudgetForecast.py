@@ -309,25 +309,17 @@ def getHostingCost(matchesDF):
 
 
 def toGitHub():
-    #label = subprocess.check_output(["git", "describe"]).strip()
-    #print(label)
-    #repo_dir = '.'
-    #repo = Repo(repo_dir)
     filename = "awsMigrationCurrentResourcesAndBudgetForecast.py"
-    #openFile = open("awsMigrationCurrentResourcesAndBudgetForecast.py", "r").read()
-    encodedFile = base64.b64encode(open(filename,"rb").read())
-    #print(encodedFile)
+    encodedFile = base64.b64encode(open(filename, "rb").read())
     name = "James Hamilton"
     username = "jameshamiltonwork887@outlook.com"
     token = "b212553c45f9fa42965f5e5eab43f0d62bf966a2"
     branch = "development"
     url = "https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents"+filename
-
     data = requests.get(url+'?ref='+branch, headers={"Authorization": "token "+token}).json()
 #        ('https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents/awsMigrationCurrentResourcesAndBudgetForecast.py?ref=development',
 #                        auth=(username, token)).json()
     sha = data['sha']
-
     querystring = json.dumps({"message": "update", "content": encodedFile.decode('utf-8'),
                    "sha": sha, "branch": branch, "name": "James%20Hamilton",
                    "email": "jameshamiltonwork887@outlook.com"})
@@ -335,9 +327,7 @@ def toGitHub():
         "Authorization": "token "+token}
 
     #payload = {"content": encodedFile}
-
-    response = requests.put(url, headers={
-        "Authorization": "token "+token}, data=querystring)
+    response = requests.put(url, headers={"Authorization": "token "+token}, data=querystring)
     print(response)
 #    print(sha)
 #    print(encodedFile.decode('utf-8'))
@@ -371,8 +361,6 @@ def toGitHub():
     #repo.index.add(file_list)
     #repo.index.commit(commit_message)
     #origin = repo.remote('https://github.com/JamesHamiltonDev/craftDemo/tree/development')
-
-
     #origin.push()
 
 
