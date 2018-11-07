@@ -330,7 +330,7 @@ def toGitHub():
     #pprint.pprint(get_url_json)
    # getSHAbasetree = requests.get(urlSHAvalueLastCommit, auth=(username, token))
     #get_url_json = getSHAlastcommit.json()
-    #print(type(get_url_json))
+    #print(type(get_url_json))**
     pprint.pprint(urlElement)
     #print(urlSHAblob)
     #
