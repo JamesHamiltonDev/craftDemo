@@ -329,7 +329,7 @@ def toGitHub():
     #payload = {"content": encodedFile}
     response = requests.put(url, headers={"Authorization": "token "+token}, data=querystring)
     print(response)
-#    print(sha)
+##    print(sha)
 #    print(encodedFile.decode('utf-8'))
 
     #getSHAlastcommit = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/development', auth=(username, token))
