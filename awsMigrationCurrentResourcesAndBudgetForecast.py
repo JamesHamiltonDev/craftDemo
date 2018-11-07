@@ -319,19 +319,28 @@ def toGitHub():
     openFile = open("awsMigrationCurrentResourcesAndBudgetForecast.py", "r").read()
     encodedFile = base64.b64decode(openFile)
     #print(encodedFile)
+    name = ("James")
     username = ("jameshamiltonwork887@outlook.com")
-    token = ('625dc2679543f127a5826a2b042be5fdc1fc3030')
-#    getSHAlastcommit = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/development', auth=(username, token))
-    getSHAblob = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/trees/development', auth=(username, token))
+    token = ('be571771dba555f24e6ad285d090a8c4b166470d')
+    #getSHAlastcommit = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/development', auth=(username, token))
+    getSHAblob = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/trees/development',
+                              auth=(username, token))
     get_url_json = getSHAblob.json()
-    urlElement = get_url_json['tree']
-    #urlSHAblob = urlElement['url']
-    print(type(get_url_json))
+    urlElement = get_url_json['tree'][3]['sha']
+    pprint.pprint(urlElement)
+    message = ("This is a test")
+    payload = {'message': message, 'content': encodedFile, 'sha': urlElement,
+               'branch': 'development', 'name': name, 'email': username}
+    updateCode = requests.request("PUT", 'https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents',
+                              auth=(username, token), params=payload)
+    #urlSHAblob = urlElement['mode'{4}]
+    #print(type(get_url_json))
+
     #pprint.pprint(get_url_json)
    # getSHAbasetree = requests.get(urlSHAvalueLastCommit, auth=(username, token))
     #get_url_json = getSHAlastcommit.json()
     #print(type(get_url_json))**
-    pprint.pprint(urlElement)
+
     #print(urlSHAblob)
     ####
     #login.text
