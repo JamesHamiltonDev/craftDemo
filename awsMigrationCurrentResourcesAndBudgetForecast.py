@@ -28,6 +28,7 @@ import github
 import json
 import calendar
 import requests
+import pprint
 import subprocess
 
 
@@ -316,9 +317,10 @@ def toGitHub():
     #file_list = ['awsMigrationCurrentResourcesAndBudgetForecast.py']
     username = 'JamesHamiltonDev'
     token = ('60800ecbf9dc2b42f910d9f9d7526b2bef08301d')
-    ###
-    #getSHA = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/master')
-    print(geturl)
+    getSHA = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/master', auth=(username, token))
+    get_url_json = getSHA.json()
+    #print(type(get_url_json))
+    pprint.pprint(get_url_json)
     #login.text
     #commit_message = 'test'
     #repo.index.add(file_list)
