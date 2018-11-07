@@ -315,24 +315,29 @@ def toGitHub():
     #print(label)
     #repo_dir = '.'
     #repo = Repo(repo_dir)
-    #file_list = ['awsMigrationCurrentResourcesAndBudgetForecast.py']
-    openFile = open("awsMigrationCurrentResourcesAndBudgetForecast.py", "r").read()
-    encodedFile = base64.b64decode(openFile)
+    filename = "awsMigrationCurrentResourcesAndBudgetForecast.py"
+    #openFile = open("awsMigrationCurrentResourcesAndBudgetForecast.py", "r").read()
+    encodedFile = base64.b64encode(open(filename,"rb").read())
     #print(encodedFile)
-    name = ("James")
-    username = ("jameshamiltonwork887@outlook.com")
-    token = ('be571771dba555f24e6ad285d090a8c4b166470d')
+    name = "James"
+    username = "jameshamiltonwork887@outlook.com"
+    token = "84163ea4a876223d56a4f2c3d169ceef09cedd06"
     #getSHAlastcommit = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/development', auth=(username, token))
     getSHAblob = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/trees/development',
                               auth=(username, token))
     get_url_json = getSHAblob.json()
     urlElement = get_url_json['tree'][3]['sha']
     pprint.pprint(urlElement)
-    message = ("This is a test")
-    payload = {'message': message, 'content': encodedFile, 'sha': urlElement,
-               'branch': 'development', 'name': name, 'email': username}
-    updateCode = requests.request("PUT", 'https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents',
-                              auth=(username, token), params=payload)
+    branch = "master"
+    message = json.dumps({"message":"update",
+                            "branch": branch,
+                            "content": encodedFile.decode("utf-8"),
+                            "sha": urlElement
+                            })
+    updateURL = "https://api.github.com/repos/JamesHamiltonDev//contents"+filename
+    #payload = "{\"message\":"+message+",\"content\":\""+encodedFile+",\"sha\":"+urlElement+",\"branch\":\""+branch+",\"name\":"+name+",\"email\":"+username+"\"}"
+    updateCode = requests.put(updateURL, data=message, headers={"Content-Type": "application/json", "Authorization": "token "+token})
+    print(updateCode)
     #urlSHAblob = urlElement['mode'{4}]
     #print(type(get_url_json))
 
