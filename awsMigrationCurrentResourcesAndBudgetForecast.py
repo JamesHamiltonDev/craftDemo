@@ -30,6 +30,7 @@ import calendar
 import requests
 import pprint
 import subprocess
+import base64
 
 
 
@@ -315,12 +316,23 @@ def toGitHub():
     #repo_dir = '.'
     #repo = Repo(repo_dir)
     #file_list = ['awsMigrationCurrentResourcesAndBudgetForecast.py']
-    username = 'JamesHamiltonDev'
-    token = ('60800ecbf9dc2b42f910d9f9d7526b2bef08301d')
-    getSHA = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/master', auth=(username, token))
-    get_url_json = getSHA.json()
+    openFile = open("awsMigrationCurrentResourcesAndBudgetForecast.py", "r").read()
+    encodedFile = base64.b64decode(openFile)
+    #print(encodedFile)
+    username = ("jameshamiltonwork887@outlook.com")
+    token = ('625dc2679543f127a5826a2b042be5fdc1fc3030')
+#    getSHAlastcommit = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/development', auth=(username, token))
+    getSHAblob = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/trees/development', auth=(username, token))
+    get_url_json = getSHAblob.json()
+    urlElement = get_url_json['tree']
+    #urlSHAblob = urlElement['url']
+    print(type(get_url_json))
+    #pprint.pprint(get_url_json)
+   # getSHAbasetree = requests.get(urlSHAvalueLastCommit, auth=(username, token))
+    #get_url_json = getSHAlastcommit.json()
     #print(type(get_url_json))
-    pprint.pprint(get_url_json)
+    pprint.pprint(urlElement)
+    #print(urlSHAblob)
     #
     #login.text
     #commit_message = 'test'
