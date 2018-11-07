@@ -28,6 +28,7 @@ import github
 import json
 import calendar
 import requests
+import subprocess
 
 
 
@@ -308,17 +309,20 @@ def getHostingCost(matchesDF):
 
 
 def toGitHub():
-    repo_dir = '.'
-    repo = Repo(repo_dir)
-    file_list = ['awsMigrationCurrentResourcesAndBudgetForecast.py']
+    #label = subprocess.check_output(["git", "describe"]).strip()
+    #print(label)
+    #repo_dir = '.'
+    #repo = Repo(repo_dir)
+    #file_list = ['awsMigrationCurrentResourcesAndBudgetForecast.py']
     username = 'JamesHamiltonDev'
-    token = ('635190c16b405e90223b37658953621cbe83bedb')
-    login = requests.get('https://api.github.com/search/repositories?q=github+api', auth=(username, token))
-    login.text
-    commit_message = 'test'
-    repo.index.add(file_list)
-    repo.index.commit(commit_message)
-    origin = repo.remote('https://github.com/JamesHamiltonDev/craftDemo/tree/development')
+    token = ('60800ecbf9dc2b42f910d9f9d7526b2bef08301d')
+    getSHA = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/master', auth=(username, token))
+    print(getSHA)
+    #login.text
+    #commit_message = 'test'
+    #repo.index.add(file_list)
+    #repo.index.commit(commit_message)
+    #origin = repo.remote('https://github.com/JamesHamiltonDev/craftDemo/tree/development')
 
 
     #origin.push()
