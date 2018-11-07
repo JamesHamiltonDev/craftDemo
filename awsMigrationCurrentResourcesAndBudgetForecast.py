@@ -22,14 +22,10 @@ pandas.set_option('display.max_rows', 2000)
 import urllib.request
 from pathlib import Path
 import time
-import os
-from git import Repo
-import github
 import json
 import calendar
 import requests
 import pprint
-import subprocess
 import base64
 
 
@@ -323,28 +319,43 @@ def toGitHub():
     #print(encodedFile)
     name = "James Hamilton"
     username = "jameshamiltonwork887@outlook.com"
-    token = "2b9edf53384387611c5908924ff27482da7bbbbf"
+    token = "b212553c45f9fa42965f5e5eab43f0d62bf966a2"
     branch = "development"
     url = "https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents"+filename
-    fullURL = "https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents"+filename+'?ref='+branch
-    data = requests.get(url+'?ref='+branch, headers = {"Authorization": "token "+token}).json()
+
+    data = requests.get(url+'?ref='+branch, headers={"Authorization": "token "+token}).json()
 #        ('https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents/awsMigrationCurrentResourcesAndBudgetForecast.py?ref=development',
 #                        auth=(username, token)).json()
     sha = data['sha']
+
+    querystring = json.dumps({"message": "update", "content": encodedFile.decode('utf-8'),
+                   "sha": sha, "branch": branch, "name": "James%20Hamilton",
+                   "email": "jameshamiltonwork887@outlook.com"})
+    headers = {
+        "Authorization": "token "+token}
+
+    #payload = {"content": encodedFile}
+
+    response = requests.put(url, headers={
+        "Authorization": "token "+token}, data=querystring)
+    print(response)
+#    print(sha)
+#    print(encodedFile.decode('utf-8'))
+
     #getSHAlastcommit = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/refs/heads/development', auth=(username, token))
-###    getSHAblob = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/trees/development',
-###                              auth=(username, token))
-###    get_url_json = getSHAblob.json()
-###    urlElement = get_url_json['tree'][3]['sha']
+#    getSHAblob = requests.get('https://api.github.com/repos/JamesHamiltonDev/craftDemo/git/trees/development',
+#                              auth=(username, token))
+#    get_url_json = getSHAblob.json()
+#    urlElement = get_url_json['tree'][3]['sha']
 #    pprint.pprint(data)
-    if encodedFile.decode('utf-8') + "\n" != data['content']:
-        message = json.dumps({"message": "update", "content": encodedFile.decode("utf-8"), "branch": branch,
-                              "sha": sha, "name": name, "email": username})
+###    if encodedFile.decode('utf-8') + "\n" != data['content']:
+###        message = json.dumps({"message": "update", "content": encodedFile.decode("utf-8"), "branch": branch,
+###                              "sha": sha, "name": name, "email": username})
 #    #payload = "{\"message\":"+message+",\"content\":\""+encodedFile+",\"sha\":"+urlElement+",\"branch\":\""+branch+",\"name\":"+name+",\"email\":"+username+"\"}"
-        updateCode = requests.put(fullURL, data=message, headers={"Content-Type": "application/json", "Authorization": "token "+token})
-        print(updateCode)
-    else:
-        print("nothing to update")
+###        updateCode = requests.put(fullURL, data=message, headers={"Content-Type": "application/json", "Authorization": "token "+token})
+###        print(updateCode)
+###    else:
+###           print("nothing to update")
     #urlSHAblob = urlElement['mode'{4}]
     #print(type(get_url_json))
 
