@@ -286,15 +286,15 @@ def getHostingCost(matchesDF):
     f2019col = ("2019 COST")
     f2020col = ("2020 COST")
     f2021col = ("2021 COST")
-    if year2019 == False:
+    if year2019 is False:
         engineer2019 = gYearEngineerTeam(efinReport, 1.10, f2019col)
     else:
         engineer2019 = lYearEngineerTeam(efinReport, 1.10, f2019col)
-    if year2020 == False:
+    if year2020 is False:
         engineer2020 = gYearEngineerTeam(efinReport, 1.25, f2020col)
     else:
         engineer2020 = lYearEngineerTeam(efinReport, 1.25, f2020col)
-    if year2021 == False:
+    if year2021 is False:
         engineer2021 = gYearEngineerTeam(efinReport, 1.40, f2021col)
     else:
         engineer2021 = lYearEngineerTeam(efinReport, 1.40, f2021col)
@@ -323,11 +323,13 @@ def toGitHub():
     querystring = json.dumps({"message": "update", "content": encodedFile.decode('utf-8'),
                    "sha": sha, "branch": branch, "name": "James%20Hamilton",
                    "email": "jameshamiltonwork887@outlook.com"})
+    data2 = encodedFile.decode('utf-8')
     headers = {
         "Authorization": "token "+token}
 
     #payload = {"content": encodedFile}
-    response = requests.put(url, headers={"Authorization": "token "+token}, data=querystring)
+    url2 = "https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents/awsMigrationCurrentResourcesAndBudgetForecast.py?ref=development&message=Upate&sha=c3e0bfa2d20de5b9b5ba7afb29acc2d29818436f&name=James Hamilton&email=jameshamiltonwork887@outlook.com"
+    response = requests.put(url2, headers=headers, data=data2)
     print(response)
 ##    print(sha)
 #    print(encodedFile.decode('utf-8'))
