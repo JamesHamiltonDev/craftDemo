@@ -52,7 +52,7 @@ def pullExcelFromGithub():
                  return fileNotFound
              else:
 
-                 urllib.request.urlretrieve(url+'hardware.xlsx')
+                 urllib.request.urlretrieve('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/master/files/hardware.xlsx')
          except:
              pass
 
