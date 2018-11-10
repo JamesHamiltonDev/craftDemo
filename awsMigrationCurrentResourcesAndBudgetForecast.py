@@ -315,7 +315,6 @@ def toGitHub():
     username = "jameshamiltonwork887@outlook.com"
     token = pandas.read_csv(r'C:\Windows\check.csv', usecols=['token'])
     token = (token['token'].iloc[0])
-    print(token)
     """
     branch = "development"
     url = "https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents"+filename
