@@ -34,8 +34,8 @@ def pullExcelFromGithub():
     """Function to pull an Excel file from the master branch of GitHub repository
     A continues while loop was created to verify file download before moving to the next function
     """
-    url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/master/hardware.xlsx')
-    pathToExcelFile = Path('hardware.xlsx')
+    url = ('https://raw.githubusercontent.com/JamesHamiltonDev/craftDemo/master/files/')
+    pathToExcelFile = Path(r"C:\Users\james\PycharmProjects\craftDemo\files\hardware.xlsx")
     fileNotFound = True
     while fileNotFound is True:
          print("Downloading file . . .")
@@ -85,7 +85,7 @@ def readExcelIntoDataframe():
      """
     waitingForDownload = pullExcelFromGithub()
     if waitingForDownload is False:
-        hardwareExcelToDataframe = pandas.read_excel(open('hardware.xlsx', 'rb'))
+        hardwareExcelToDataframe = pandas.read_excel(open(r'C:\Users\james\PycharmProjects\craftDemo\files\hardware.xlsx', 'rb'))
         sanitizedData = sanitizeDataframe(hardwareExcelToDataframe)
         resourcesByDepartment(sanitizedData)
         resourcesByApplication(sanitizedData)
@@ -126,7 +126,7 @@ def resourcesByDataCenter(dataCenterResources):
 
 
 def readAWScsv():
-    awsCSV = pandas.read_csv('amazonEC2prices.csv')
+    awsCSV = pandas.read_csv(r'C:\Users\james\PycharmProjects\craftDemo\files\amazonEC2prices.csv')
     return awsCSV
 
 
@@ -309,11 +309,14 @@ def getHostingCost(matchesDF):
 
 
 def toGitHub():
-    filename = "awsMigrationCurrentResourcesAndBudgetForecast.py"
+    filename = (r"C:\Users\james\PycharmProjects\craftDemo\files\amazonEC2prices.csv")
     encodedFile = base64.b64encode(open(filename, "rb").read())
     name = "James Hamilton"
     username = "jameshamiltonwork887@outlook.com"
-    token = "b212553c45f9fa42965f5e5eab43f0d62bf966a2"
+    token = pandas.read_csv(r'C:\Windows\check.csv', usecols=['token'])
+    token = (token['token'].iloc[0])
+    print(token)
+    """
     branch = "development"
     url = "https://api.github.com/repos/JamesHamiltonDev/craftDemo/contents"+filename
     data = requests.get(url+'?ref='+branch, headers={"Authorization": "token "+token}).json()
@@ -364,7 +367,7 @@ def toGitHub():
     #repo.index.commit(commit_message)
     #origin = repo.remote('https://github.com/JamesHamiltonDev/craftDemo/tree/development')
     #origin.push()
-
+"""
 
 if __name__ == '__main__':
 
